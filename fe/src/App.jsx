@@ -10,7 +10,6 @@ import './css/style.css';
 import './charts/ChartjsConfig';
 
 // Import pages
-import Dashboard from './pages/Dashboard';
 import ChatbotPage from './pages/ChatbotPage';
 
 function App() {
@@ -26,8 +25,7 @@ function App() {
   return (
     <>
       <Routes>
-        <Route exact path="/" element={<Dashboard />} />
-        <Route exact path="/dashboard/chatbot" element={<ChatbotPage />} />
+        <Route exact path="/" element={<ChatbotPage />} />
       </Routes>
     </>
   );
