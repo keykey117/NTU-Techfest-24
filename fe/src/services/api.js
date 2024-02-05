@@ -16,4 +16,10 @@ const transcribe = (blob) => {
   return req.then((res) => res.data);
 };
 
-export default { completeText, transcribe };
+const textToSpeech = (text) => {
+  const data = { text: text };
+  const req = axios.post(baseUrl + "/tts", data);
+  return req.then((res) => res.data.message === "success");
+};
+
+export default { completeText, transcribe, textToSpeech };

@@ -14,6 +14,7 @@ import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import Loader from "./ui/loader";
 import { AudioRecorder } from "react-audio-voice-recorder";
+import sound from "../assets/reply.mp3";
 
 export default function Chat() {
   const [userInput, setUserInput] = useState("");
@@ -43,6 +44,7 @@ export default function Chat() {
 
   const handleRecordingComplete = async (blob) => {
     setIsLoading(true);
+    let tts = false;
     try {
       const transcript = await apiServices.transcribe(blob);
       console.log(transcript);
@@ -50,12 +52,17 @@ export default function Chat() {
       const chat = [...chatHistory, audio_input];
       setChatHistory(chat);
       const reply = await apiServices.completeText(chat);
-      console.log(reply);
+      tts = await apiServices.textToSpeech(reply.content);
       setChatHistory([...chat, reply]);
     } catch (error) {
-      console.error("Error completing text:", error);
+      console.error("Error replying:", error);
     } finally {
       setIsLoading(false);
+      if (tts) {
+        console.log("success");
+        const audio = new Audio(sound);
+        audio.play();
+      }
     }
 
     console.log("recording Complete");
@@ -91,9 +98,9 @@ export default function Chat() {
                     <span className="block font-bold text-slate-700">
                       {message.role === "user" ? "You" : "Friend"}
                     </span>
-                    <div className="bg-gray-100 p-3 rounded">
+                    <pre className="bg-gray-100 p-3 rounded font-sans">
                       {message.content}
-                    </div>
+                    </pre>
                   </div>
                 </div>
               );

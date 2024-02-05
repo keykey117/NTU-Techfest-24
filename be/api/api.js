@@ -3,6 +3,7 @@ const openai = new OpenAI({ apikey: process.env.OPENAI_API_KEY });
 const axios = require("axios");
 const fs = require("fs");
 const FormData = require("form-data");
+const path = require("path");
 
 // messages is an array of message objects
 // message object = {role: "user" or "assistant", content: "message"}
@@ -46,4 +47,17 @@ async function transcribe(audioFile) {
   }
 }
 
-module.exports = { completeText, transcribe };
+async function textToSpeech(text) {
+  console.log(text);
+  const speechFile = path.resolve("../fe/src/assets/reply.mp3");
+  const mp3 = await openai.audio.speech.create({
+    model: "tts-1",
+    voice: "alloy",
+    input: text,
+  });
+  console.log("speech is stored at ", speechFile);
+  const buffer = Buffer.from(await mp3.arrayBuffer());
+  await fs.promises.writeFile(speechFile, buffer);
+}
+
+module.exports = { completeText, transcribe, textToSpeech };

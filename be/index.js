@@ -54,6 +54,23 @@ app.post(
   }
 );
 
+app.post("/api/tts", (req, res, next) => {
+  const body = req.body;
+  if (!body.text) {
+    return res.status(400).json({
+      error: "text missing",
+    });
+  }
+  api
+    .textToSpeech(body.text)
+    .then(() => {
+      res.json({ message: "success" });
+    })
+    .catch((err) => {
+      next(err);
+    });
+});
+
 const unknownEndpoint = (req, res) => {
   res.status(404).send({ error: "unknown endpoint" });
 };

@@ -29,6 +29,7 @@
     "react-transition-group": "^4.4.5",
     "tailwind-merge": "^2.2.1",
     "tailwindcss-animate": "^1.0.7",
+    "use-sound": "^4.0.1",
     "webm-to-mp4": "^1.0.0"
   },
   "devDependencies": {
