@@ -18,15 +18,18 @@
     "chartjs-adapter-moment": "^1.0.1",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
+    "ffmpeg": "^0.0.4",
     "lucide-react": "^0.321.0",
     "react": "^18.2.0",
+    "react-audio-voice-recorder": "^2.2.0",
     "react-dom": "^18.2.0",
     "react-flatpickr": "^3.10.13",
     "react-loader-spinner": "^6.1.6",
     "react-router-dom": "^6.22.0",
     "react-transition-group": "^4.4.5",
     "tailwind-merge": "^2.2.1",
-    "tailwindcss-animate": "^1.0.7"
+    "tailwindcss-animate": "^1.0.7",
+    "webm-to-mp4": "^1.0.0"
   },
   "devDependencies": {
     "@types/react": "^18.2.43",

@@ -1,4 +1,7 @@
 require("dotenv").config();
+const multer = require("multer");
+const upload = multer({ dest: "./uploads" });
+
 const express = require("express");
 const cors = require("cors");
 const morgan = require("morgan");
@@ -37,6 +40,19 @@ app.post("/api/chatbot", (req, res, next) => {
       next(err);
     });
 });
+
+app.post(
+  "/api/transcribe",
+  upload.single("audioFile"),
+  async (req, res, next) => {
+    api
+      .transcribe(req.file)
+      .then((transcript) => res.json(transcript))
+      .catch((err) => {
+        next(err);
+      });
+  }
+);
 
 const unknownEndpoint = (req, res) => {
   res.status(404).send({ error: "unknown endpoint" });

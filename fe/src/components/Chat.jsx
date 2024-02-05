@@ -13,9 +13,9 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import Loader from "./ui/loader";
+import { AudioRecorder } from "react-audio-voice-recorder";
 
 export default function Chat() {
-  let id = 0;
   const [userInput, setUserInput] = useState("");
   const [chatHistory, setChatHistory] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -34,11 +34,31 @@ export default function Chat() {
       console.log(reply);
       setChatHistory([...chat, reply]);
     } catch (error) {
-      console.error('Error completing text:', error);
+      console.error("Error completing text:", error);
     } finally {
       setIsLoading(false);
     }
     setUserInput("");
+  };
+
+  const handleRecordingComplete = async (blob) => {
+    setIsLoading(true);
+    try {
+      const transcript = await apiServices.transcribe(blob);
+      console.log(transcript);
+      const audio_input = { role: "user", content: transcript };
+      const chat = [...chatHistory, audio_input];
+      setChatHistory(chat);
+      const reply = await apiServices.completeText(chat);
+      console.log(reply);
+      setChatHistory([...chat, reply]);
+    } catch (error) {
+      console.error("Error completing text:", error);
+    } finally {
+      setIsLoading(false);
+    }
+
+    console.log("recording Complete");
   };
 
   return (
@@ -49,13 +69,16 @@ export default function Chat() {
           <CardDescription>Your AI friend</CardDescription>
         </CardHeader>
         <CardContent>
-          <ScrollArea className="h-[600px] w-full pr-4"> 
+          <ScrollArea className="h-[600px] w-full pr-4">
             {chatHistory.map((message, id) => {
               return (
-                <div key={id} className="flex gap-3 text-slate-600 text-sm mb-4">
+                <div
+                  key={id}
+                  className="flex gap-3 text-slate-600 text-sm mb-4"
+                >
                   {message.role === "user" && (
                     <Avatar>
-                      <AvatarFallback>KY</AvatarFallback>
+                      <AvatarFallback>User</AvatarFallback>
                     </Avatar>
                   )}
                   {message.role === "assistant" && (
@@ -64,14 +87,14 @@ export default function Chat() {
                     </Avatar>
                   )}
 
-                  <p className="leading-relaxed">
+                  <div className="leading-relaxed">
                     <span className="block font-bold text-slate-700">
                       {message.role === "user" ? "You" : "Friend"}
                     </span>
                     <div className="bg-gray-100 p-3 rounded">
                       {message.content}
                     </div>
-                  </p>
+                  </div>
                 </div>
               );
             })}
@@ -80,17 +103,22 @@ export default function Chat() {
         <CardFooter>
           <form className="w-full flex gap-2" onSubmit={handleSubmit}>
             <Input
-              
+              placeholder="Start chatting here..."
               value={userInput}
               onChange={handleInputChange}
             />
             <Button type="submit">Send</Button>
+            <AudioRecorder
+              onRecordingComplete={handleRecordingComplete}
+              audioTrackConstraints={{
+                noiseSuppression: true,
+                echoCancellation: true,
+              }}
+            />
           </form>
         </CardFooter>
-        {
-          isLoading && <Loader/>
-        }
+        {isLoading && <Loader />}
       </Card>
-      </div>
+    </div>
   );
 }
