@@ -98,9 +98,16 @@ export default function Chat() {
                     <span className="block font-bold text-slate-700">
                       {message.role === "user" ? "You" : "Friend"}
                     </span>
-                    <pre className="bg-gray-100 p-3 rounded font-sans">
-                      {message.content}
-                    </pre>
+                    <div className="w-full">
+                      <div className="bg-gray-100 p-3 rounded font-sans">
+                        {message.content.split("\n").map((p, ind) => (
+                          <p key={ind}>
+                            {p}
+                            <br />
+                          </p>
+                        ))}
+                      </div>
+                    </div>
                   </div>
                 </div>
               );
